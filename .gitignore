@@ -1,0 +1,7 @@
+# typescript compiled files
+/dist/**/*.map
+/dist/**/*.js
+
+# vs code settings directory
+/.vscode/
+/.vscode/**

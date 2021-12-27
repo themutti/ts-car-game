@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "target": "ESNEXT",
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "watch": true
+    }
+}

@@ -1,0 +1,65 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    background-color: green;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.game-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.score {
+    position: absolute;
+    right: 1vmin;
+    top: 1vmin;
+    font-size: 3vmin;
+    z-index: 1;
+}
+
+.start-game {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5vmin;
+    z-index: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+.road {
+    --left: 0;
+    position: absolute;
+    height: 100%;
+    left: calc(var(--left) * 1%);
+    bottom: 0;
+}
+
+.car-player {
+    --left: 0;
+    --bottom: 0;
+    position: absolute;
+    left: calc(var(--left) * 1%);
+    bottom: calc(var(--bottom) * 1%);
+    height: 15%;
+}
+
+.obstacle {
+    --left: 0;
+    --bottom: 0;
+    position: absolute;
+    left: calc(var(--left) * 1%);
+    bottom: calc(var(--bottom) * 1%);
+    height: 15%;
+}
