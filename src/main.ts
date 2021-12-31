@@ -10,7 +10,7 @@ const GAME_HEIGHT = 35
 const SPEED_SCALE_INCREASE = 0.0002;
 const MAX_SPEED_SCALE = 5;
 
-const gameElem: HTMLElement = document.getElementById("game-wrapper");
+const gameWrapperElem: HTMLElement = document.getElementById("game-wrapper");
 const scoreElem: HTMLElement = document.getElementById("score");
 const startGameElem: HTMLElement = document.getElementById("start-game");
 
@@ -29,8 +29,8 @@ function update(time: number): void {
     const deltaTime = time - lastTime;
 
     road.update(deltaTime, speedScale);
-    carPlayer.update(deltaTime, speedScale);
-    //updateSpeedScale(deltaTime);  // TODO fix bug fast road
+    carPlayer.update(deltaTime, gameWrapperElem.clientWidth, gameWrapperElem.clientHeight);
+    updateSpeedScale(deltaTime);  // TODO fix bug fast road
     updateScore(deltaTime);
 
     lastTime = time;
@@ -50,7 +50,7 @@ function updateScore(deltaTime: number): void {
 
 function handleStart(): void {
     lastTime = null;
-    speedScale = 2;  // 1
+    speedScale = 1;
     score = 0;
     startGameElem.classList.add("hidden");
     window.requestAnimationFrame(update);
@@ -63,8 +63,8 @@ function setPixelToGameScale(): void {
     } else {
         gameToPixelScale = window.innerHeight / GAME_HEIGHT;
     }
-    gameElem.style.width = `${GAME_WIDTH * gameToPixelScale}px`;
-    gameElem.style.height = `${GAME_HEIGHT * gameToPixelScale}px`;
+    gameWrapperElem.style.width = `${GAME_WIDTH * gameToPixelScale}px`;
+    gameWrapperElem.style.height = `${GAME_HEIGHT * gameToPixelScale}px`;
 }
 
 setPixelToGameScale();

@@ -3,7 +3,7 @@ import {
     setCustomProperty
 } from "./updateCustomProperty.js"
 
-const SPEED = 0.03;
+const SPEED = 0.06;
 
 export default class CarPlayer {
     private readonly carElem: HTMLElement;
@@ -43,10 +43,10 @@ export default class CarPlayer {
 
     reset(): void {
         this.x = 5;
-        this.y = 55;
+        this.y = 19;
     }
 
-    update(deltaTime: number, speedScale: number): void {
+    update(deltaTime: number, gameWrapperWidth: number, gameWrapperHeight: number): void {
         let xVel = 0;
         let yVel = 0;
         if (this.pressedKeys.up) {
@@ -61,8 +61,22 @@ export default class CarPlayer {
         if (this.pressedKeys.left) {
             xVel -= SPEED;
         }
-        this.x += xVel * deltaTime * speedScale;
-        this.y += yVel * deltaTime * speedScale;
+
+        let x = this.x + xVel * deltaTime;
+        let y = this.y + yVel * deltaTime;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        // convert car width and height from px to vw
+        const width = this.rect().width * 100 / document.documentElement.clientWidth;
+        const height = this.rect().height * 100 / document.documentElement.clientWidth;
+        // convert game wrapper width and height from px to vw
+        gameWrapperWidth *= 100 / document.documentElement.clientWidth;
+        gameWrapperHeight *= 100 / document.documentElement.clientWidth;
+        if (x + width > gameWrapperWidth) x = gameWrapperWidth - width; 
+        if (y + height > gameWrapperHeight) y = gameWrapperHeight - height; 
+
+        this.x = x;
+        this.y = y;
     }
 
     private onKey(e: KeyboardEvent, isDown: boolean): void {
