@@ -42,14 +42,14 @@ body {
     --left: 0;
     position: absolute;
     height: 100%;
-    left: calc(var(--left) * 1%);
+    left: calc(var(--left) * 1vw);
     top: 0;
 }
 
 .object {
     position: absolute;
-    left: calc(var(--x) * 1%);
-    top: calc(var(--y) * 1%);
+    left: calc(var(--x) * 1vw);
+    top: calc(var(--y) * 1vw);
     height: 15%;
 }
 

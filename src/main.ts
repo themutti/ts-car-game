@@ -30,7 +30,7 @@ function update(time: number): void {
 
     road.update(deltaTime, speedScale);
     carPlayer.update(deltaTime, speedScale);
-    updateSpeedScale(deltaTime);  // TODO fix bug fast road
+    //updateSpeedScale(deltaTime);  // TODO fix bug fast road
     updateScore(deltaTime);
 
     lastTime = time;
@@ -50,7 +50,7 @@ function updateScore(deltaTime: number): void {
 
 function handleStart(): void {
     lastTime = null;
-    speedScale = 1;
+    speedScale = 2;  // 1
     score = 0;
     startGameElem.classList.add("hidden");
     window.requestAnimationFrame(update);

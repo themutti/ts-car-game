@@ -3,13 +3,21 @@ import {
     setCustomProperty
 } from "./updateCustomProperty.js"
 
-const SPEED = 0.02;
+const SPEED = 0.03;
 
 export default class CarPlayer {
     private readonly carElem: HTMLElement;
+    private readonly pressedKeys = {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+    };
 
-    constructor(carElem) {
+    constructor(carElem: HTMLElement) {
         this.carElem = carElem;
+        document.addEventListener("keydown", (e: KeyboardEvent): void => this.onKey(e, true));
+        document.addEventListener("keyup", (e: KeyboardEvent): void => this.onKey(e, false));
         this.reset();
     }
 
@@ -39,6 +47,46 @@ export default class CarPlayer {
     }
 
     update(deltaTime: number, speedScale: number): void {
-        
+        let xVel = 0;
+        let yVel = 0;
+        if (this.pressedKeys.up) {
+            yVel -= SPEED;
+        }
+        if (this.pressedKeys.down) {
+            yVel += SPEED;
+        }
+        if (this.pressedKeys.right) {
+            xVel += SPEED;
+        }
+        if (this.pressedKeys.left) {
+            xVel -= SPEED;
+        }
+        this.x += xVel * deltaTime * speedScale;
+        this.y += yVel * deltaTime * speedScale;
+    }
+
+    private onKey(e: KeyboardEvent, isDown: boolean): void {
+        switch(e.code) {
+            case "KeyW":
+            case "ArrowUp": {
+                this.pressedKeys.up = isDown;
+                break;
+            }
+            case "KeyS":
+            case "ArrowDown": {
+                this.pressedKeys.down = isDown;
+                break;
+            }
+            case "KeyA":
+            case "ArrowLeft": {
+                this.pressedKeys.left = isDown;
+                break;
+            }
+            case "KeyD":
+            case "ArrowRight": {
+                this.pressedKeys.right = isDown;
+                break;
+            }
+        }
     }
 }
