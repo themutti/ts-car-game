@@ -1,12 +1,9 @@
-import {
-    getCustomProperty,
-    setCustomProperty
-} from "./updateCustomProperty.js"
+import GameObject from "./gameObject.js";
 
 const SPEED = 0.06;
 
-export default class CarPlayer {
-    private readonly carElem: HTMLElement;
+export default class CarPlayer extends GameObject {
+    private readonly gameWrapperElem: HTMLElement;
     private readonly pressedKeys = {
         up: false,
         down: false,
@@ -14,31 +11,12 @@ export default class CarPlayer {
         right: false
     };
 
-    constructor(carElem: HTMLElement) {
-        this.carElem = carElem;
+    constructor(carElem: HTMLElement, gameWrapperElem: HTMLElement) {
+        super(carElem);
+        this.gameWrapperElem = gameWrapperElem;
         document.addEventListener("keydown", (e: KeyboardEvent): void => this.onKey(e, true));
         document.addEventListener("keyup", (e: KeyboardEvent): void => this.onKey(e, false));
         this.reset();
-    }
-
-    get x(): number {
-        return getCustomProperty(this.carElem, "--x");
-    }
-
-    set x(value: number) {
-        setCustomProperty(this.carElem, "--x", value);
-    }
-
-    get y(): number {
-        return getCustomProperty(this.carElem, "--y");
-    }
-
-    set y(value: number) {
-        setCustomProperty(this.carElem, "--y", value);
-    }
-
-    rect(): DOMRect {
-        return this.carElem.getBoundingClientRect();
     }
 
     reset(): void {
@@ -46,7 +24,11 @@ export default class CarPlayer {
         this.y = 19;
     }
 
-    update(deltaTime: number, gameWrapperWidth: number, gameWrapperHeight: number): void {
+    isCollision(objs: GameObject[]): boolean {
+        return false;
+    }
+
+    update(deltaTime: number, speedScale: number): void {
         let xVel = 0;
         let yVel = 0;
         if (this.pressedKeys.up) {
@@ -67,11 +49,11 @@ export default class CarPlayer {
         if (x < 0) x = 0;
         if (y < 0) y = 0;
         // convert car width and height from px to vw
-        const width = this.rect().width * 100 / document.documentElement.clientWidth;
-        const height = this.rect().height * 100 / document.documentElement.clientWidth;
+        const width = this.px2vw(this.rect().width);
+        const height = this.px2vw(this.rect().height);
         // convert game wrapper width and height from px to vw
-        gameWrapperWidth *= 100 / document.documentElement.clientWidth;
-        gameWrapperHeight *= 100 / document.documentElement.clientWidth;
+        const gameWrapperWidth = this.px2vw(this.gameWrapperElem.clientWidth);
+        const gameWrapperHeight = this.px2vw(this.gameWrapperElem.clientHeight);
         if (x + width > gameWrapperWidth) x = gameWrapperWidth - width; 
         if (y + height > gameWrapperHeight) y = gameWrapperHeight - height; 
 

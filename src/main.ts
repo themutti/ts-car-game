@@ -15,7 +15,7 @@ const scoreElem: HTMLElement = document.getElementById("score");
 const startGameElem: HTMLElement = document.getElementById("start-game");
 
 const road = new Road([...document.querySelectorAll<HTMLElement>(".road")]);
-const carPlayer = new CarPlayer(document.getElementById("car-player"));
+const carPlayer = new CarPlayer(document.getElementById("car-player"), gameWrapperElem);
 
 let lastTime: number;
 let speedScale: number;
@@ -29,7 +29,7 @@ function update(time: number): void {
     const deltaTime = time - lastTime;
 
     road.update(deltaTime, speedScale);
-    carPlayer.update(deltaTime, gameWrapperElem.clientWidth, gameWrapperElem.clientHeight);
+    carPlayer.update(deltaTime, speedScale);
     updateSpeedScale(deltaTime);  // TODO fix bug fast road
     updateScore(deltaTime);
 
