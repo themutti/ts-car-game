@@ -4,35 +4,42 @@ import {
 } from "./updateCustomProperty.js"
 
 export default abstract class GameObject {
-    private readonly objElem: HTMLElement;
+    protected readonly gameWrapperElem: HTMLElement;
+    protected readonly element: HTMLElement;
 
-    constructor(objElem: HTMLElement) {
-        this.objElem = objElem;
+    constructor(gameWrapperElem: HTMLElement, objElem: HTMLElement) {
+        this.gameWrapperElem = gameWrapperElem;
+        this.element = objElem;
+        objElem.classList.add("game-object");
     }
 
     get x(): number {
-        return getCustomProperty(this.objElem, "--x");
+        return getCustomProperty(this.element, "--x");
     }
 
     set x(value: number) {
-        setCustomProperty(this.objElem, "--x", value);
+        setCustomProperty(this.element, "--x", value);
     }
 
     get y(): number {
-        return getCustomProperty(this.objElem, "--y");
+        return getCustomProperty(this.element, "--y");
     }
 
     set y(value: number) {
-        setCustomProperty(this.objElem, "--y", value);
+        setCustomProperty(this.element, "--y", value);
+    }
+
+    get exists(): boolean {
+        return document.contains(this.element);
     }
 
     rect(): DOMRect {
-        return this.objElem.getBoundingClientRect();
+        return this.element.getBoundingClientRect();
     }
 
     abstract update(deltaTime: number, speedScale: number): void;
+}
 
-    protected px2vw(px: number) {
-        return px * 100 / document.documentElement.clientWidth
-    }
+export function px2vw(px: number): number {
+    return px * 100 / document.documentElement.clientWidth;
 }

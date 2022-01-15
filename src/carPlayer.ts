@@ -1,9 +1,8 @@
-import GameObject from "./gameObject.js";
+import GameObject, { px2vw } from "./gameObject.js";
 
 const SPEED = 0.06;
 
 export default class CarPlayer extends GameObject {
-    private readonly gameWrapperElem: HTMLElement;
     private readonly pressedKeys = {
         up: false,
         down: false,
@@ -11,9 +10,8 @@ export default class CarPlayer extends GameObject {
         right: false
     };
 
-    constructor(carElem: HTMLElement, gameWrapperElem: HTMLElement) {
-        super(carElem);
-        this.gameWrapperElem = gameWrapperElem;
+    constructor(gameWrapperElem: HTMLElement, carElem: HTMLElement) {
+        super(gameWrapperElem, carElem);
         document.addEventListener("keydown", (e: KeyboardEvent): void => this.onKey(e, true));
         document.addEventListener("keyup", (e: KeyboardEvent): void => this.onKey(e, false));
         this.reset();
@@ -24,7 +22,7 @@ export default class CarPlayer extends GameObject {
         this.y = 19;
     }
 
-    isCollision(objs: GameObject[]): boolean {
+    isCollision(obj: GameObject): boolean {
         return false;
     }
 
@@ -46,16 +44,18 @@ export default class CarPlayer extends GameObject {
 
         let x = this.x + xVel * deltaTime;
         let y = this.y + yVel * deltaTime;
+        // check top-left collisions with the road
         if (x < 0) x = 0;
         if (y < 0) y = 0;
         // convert car width and height from px to vw
-        const width = this.px2vw(this.rect().width);
-        const height = this.px2vw(this.rect().height);
+        const width = px2vw(this.rect().width);
+        const height = px2vw(this.rect().height);
         // convert game wrapper width and height from px to vw
-        const gameWrapperWidth = this.px2vw(this.gameWrapperElem.clientWidth);
-        const gameWrapperHeight = this.px2vw(this.gameWrapperElem.clientHeight);
-        if (x + width > gameWrapperWidth) x = gameWrapperWidth - width; 
-        if (y + height > gameWrapperHeight) y = gameWrapperHeight - height; 
+        const gameWrapperWidth = px2vw(this.gameWrapperElem.clientWidth);
+        const gameWrapperHeight = px2vw(this.gameWrapperElem.clientHeight);
+        // check bottom-right collisions with the road
+        if (x+width > gameWrapperWidth) x = gameWrapperWidth - width; 
+        if (y+height > gameWrapperHeight) y = gameWrapperHeight - height; 
 
         this.x = x;
         this.y = y;

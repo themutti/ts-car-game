@@ -3,7 +3,8 @@
 // https://github.com/WebDevSimplified/js-pong
 
 import Road from "./road.js";
-import CarPlayer from "./car.js";
+import CarPlayer from "./carPlayer.js";
+import CarObstacle from "./carObstacle.js";
 
 const GAME_WIDTH = 100
 const GAME_HEIGHT = 35
@@ -15,7 +16,9 @@ const scoreElem: HTMLElement = document.getElementById("score");
 const startGameElem: HTMLElement = document.getElementById("start-game");
 
 const road = new Road([...document.querySelectorAll<HTMLElement>(".road")]);
-const carPlayer = new CarPlayer(document.getElementById("car-player"), gameWrapperElem);
+const carPlayer = new CarPlayer(gameWrapperElem, document.getElementById("car-player"));
+let carObstacle: CarObstacle;
+setTimeout(() => carObstacle = new CarObstacle(gameWrapperElem), 100)
 
 let lastTime: number;
 let speedScale: number;
@@ -30,6 +33,7 @@ function update(time: number): void {
 
     road.update(deltaTime, speedScale);
     carPlayer.update(deltaTime, speedScale);
+    carObstacle.update(deltaTime, speedScale);
     updateSpeedScale(deltaTime);  // TODO fix bug fast road
     updateScore(deltaTime);
 
