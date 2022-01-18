@@ -4,11 +4,11 @@
 
 import Road from "./road.js";
 import CarPlayer from "./carPlayer.js";
-import CarObstacle from "./carObstacle.js";
+import { resetCarObstacles, updateCarObstacles, getCarObstaclesRects } from "./carObstacle.js";
 
 const GAME_WIDTH = 100
 const GAME_HEIGHT = 35
-const SPEED_SCALE_INCREASE = 0.0002;
+const SPEED_SCALE_INCREASE = 0.00008;
 const MAX_SPEED_SCALE = 5;
 
 const gameWrapperElem: HTMLElement = document.getElementById("game-wrapper");
@@ -17,12 +17,11 @@ const startGameElem: HTMLElement = document.getElementById("start-game");
 
 const road = new Road([...document.querySelectorAll<HTMLElement>(".road")]);
 const carPlayer = new CarPlayer(gameWrapperElem, document.getElementById("car-player"));
-let carObstacle: CarObstacle;
-setTimeout(() => carObstacle = new CarObstacle(gameWrapperElem), 100)
 
 let lastTime: number;
 let speedScale: number;
 let score: number;
+
 function update(time: number): void {
     if (lastTime == null) {
         lastTime = time;
@@ -33,11 +32,24 @@ function update(time: number): void {
 
     road.update(deltaTime, speedScale);
     carPlayer.update(deltaTime, speedScale);
-    carObstacle.update(deltaTime, speedScale);
+    updateCarObstacles(deltaTime, speedScale);
+    if ( checkCollision(carPlayer.rect(), getCarObstaclesRects()) ) {
+        console.log("a");
+    }
     updateSpeedScale(deltaTime);  // TODO fix bug fast road
     updateScore(deltaTime);
 
     lastTime = time;
+    window.requestAnimationFrame(update);
+}
+
+function handleStart(): void {
+    lastTime = null;
+    speedScale = 1;
+    score = 0;
+    carPlayer.reset();
+    resetCarObstacles();
+    startGameElem.classList.add("hidden");
     window.requestAnimationFrame(update);
 }
 
@@ -52,12 +64,15 @@ function updateScore(deltaTime: number): void {
     scoreElem.innerText = Math.floor(score).toString();
 }
 
-function handleStart(): void {
-    lastTime = null;
-    speedScale = 1;
-    score = 0;
-    startGameElem.classList.add("hidden");
-    window.requestAnimationFrame(update);
+function checkCollision(playerRect: DOMRect, obstaclesRects: DOMRect[]): boolean {
+    return obstaclesRects.some((rect): boolean => {
+        return (
+            playerRect.top < rect.bottom &&
+            playerRect.bottom > rect.top &&
+            playerRect.left < rect.right &&
+            playerRect.right > rect.left
+        );
+    });
 }
 
 function setPixelToGameScale(): void {
@@ -74,3 +89,4 @@ function setPixelToGameScale(): void {
 setPixelToGameScale();
 window.addEventListener("resize", setPixelToGameScale);
 document.addEventListener("keydown", handleStart, { once: true });
+document.addEventListener("contextmenu", (e: Event): void => e.preventDefault());

@@ -52,6 +52,8 @@ body {
 }
 
 .game-object {
+    --x: 100;
+    --y: 0;
     position: absolute;
     left: calc(var(--x) * 1vw);
     top: calc(var(--y) * 1vw);

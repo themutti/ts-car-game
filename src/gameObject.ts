@@ -10,6 +10,7 @@ export default abstract class GameObject {
     constructor(gameWrapperElem: HTMLElement, objElem: HTMLElement) {
         this.gameWrapperElem = gameWrapperElem;
         this.element = objElem;
+        objElem.setAttribute("draggable", "false");
         objElem.classList.add("game-object");
     }
 
@@ -35,6 +36,10 @@ export default abstract class GameObject {
 
     rect(): DOMRect {
         return this.element.getBoundingClientRect();
+    }
+
+    remove(): void {
+        this.element.remove();
     }
 
     abstract update(deltaTime: number, speedScale: number): void;

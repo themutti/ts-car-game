@@ -1,6 +1,6 @@
 import GameObject, { px2vw } from "./gameObject.js";
 
-const SPEED = 0.06;
+const SPEED = 0.04;
 
 export default class CarPlayer extends GameObject {
     private readonly pressedKeys = {
@@ -20,10 +20,6 @@ export default class CarPlayer extends GameObject {
     reset(): void {
         this.x = 5;
         this.y = 19;
-    }
-
-    isCollision(obj: GameObject): boolean {
-        return false;
     }
 
     update(deltaTime: number, speedScale: number): void {
