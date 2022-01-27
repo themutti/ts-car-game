@@ -3,6 +3,7 @@ import GameObject, { px2vw } from "./gameObject.js";
 const BASE_SPEED = 0.01;
 const MIN_CAR_TIME = 80;
 const MAX_CAR_TIME = 1000;
+const MAX_CARS = 10;
 
 const gameWrapperElem: HTMLElement = document.getElementById("game-wrapper");
 const cars: CarObstacle[] = [];
@@ -15,7 +16,7 @@ export default class CarObstacle extends GameObject {
     constructor(gameWrapperElem: HTMLElement, curSpeedScale: number) {
         super(gameWrapperElem, document.createElement("img") as HTMLImageElement);
         this.flipped = randint(0, 1) !== 0;
-        this.speed = randint(20, 30) / 1000;
+        this.speed = randint(10, 20) / 1000;
         this.buildElem((): void => this.initPos(curSpeedScale));
     }
 
@@ -45,7 +46,7 @@ export default class CarObstacle extends GameObject {
     }
 
     update(deltaTime: number, speedScale: number): void {
-        this.x += deltaTime * this.speed * (this.flipped ? -0.5 : 1) - deltaTime * speedScale * BASE_SPEED;
+        this.x += deltaTime * this.speed * (this.flipped ? -1 : 1) - deltaTime * speedScale * BASE_SPEED;
         const rectWidth = px2vw(this.rect().width);
         const gameWrapperWidth = px2vw(this.gameWrapperElem.clientWidth);
         // give the car double its width of space on the sides outside of the screen so it won't get removed after spawned
@@ -82,14 +83,17 @@ export function updateCarObstacles(deltaTime: number, speedScale: number): void 
         car.update(deltaTime, speedScale);
     }
 
-    if (nextCarTime <= 0) {
-        cars.push(new CarObstacle(gameWrapperElem, speedScale));
-        nextCarTime = randint(MIN_CAR_TIME, MAX_CAR_TIME);
+    if (cars.length <= MAX_CARS) {
+        if (nextCarTime <= 0) {
+            cars.push(new CarObstacle(gameWrapperElem, speedScale));
+            // subtract speedScale*50 from MAX_CAR_TIME to make the game harder the faster it goes
+            nextCarTime = randint(MIN_CAR_TIME, MAX_CAR_TIME + speedScale*50);
+        }
+        nextCarTime -= deltaTime;
     }
-    nextCarTime -= deltaTime;
 }
 
-/* returns a random number beetween min and max (both inclusive) */
+/* returns a random integer beetween min and max (both inclusive) */
 function randint(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }

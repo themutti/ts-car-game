@@ -6,14 +6,14 @@ import Road from "./road.js";
 import CarPlayer from "./carPlayer.js";
 import { resetCarObstacles, updateCarObstacles, getCarObstaclesRects } from "./carObstacle.js";
 
-const GAME_WIDTH = 100
-const GAME_HEIGHT = 35
-const SPEED_SCALE_INCREASE = 0.00008;
+const SPEED_SCALE_INCREASE = 0.0008;
 const MAX_SPEED_SCALE = 5;
+const MAX_LIVES = 3;
 
 const gameWrapperElem: HTMLElement = document.getElementById("game-wrapper");
 const scoreElem: HTMLElement = document.getElementById("score");
 const startGameElem: HTMLElement = document.getElementById("start-game");
+const lifeElems: HTMLElement[] = [...document.querySelectorAll<HTMLElement>(".life")];
 
 const road = new Road([...document.querySelectorAll<HTMLElement>(".road")]);
 const carPlayer = new CarPlayer(gameWrapperElem, document.getElementById("car-player"));
@@ -21,6 +21,7 @@ const carPlayer = new CarPlayer(gameWrapperElem, document.getElementById("car-pl
 let lastTime: number;
 let speedScale: number;
 let score: number;
+let lives: number;
 
 function update(time: number): void {
     if (lastTime == null) {
@@ -33,8 +34,17 @@ function update(time: number): void {
     road.update(deltaTime, speedScale);
     carPlayer.update(deltaTime, speedScale);
     updateCarObstacles(deltaTime, speedScale);
-    if ( checkCollision(carPlayer.rect(), getCarObstaclesRects()) ) {
-        console.log("a");
+
+    if (!carPlayer.isBlinking && checkCollision(carPlayer.rect(), getCarObstaclesRects())) {
+        speedScale = 0;
+        lives--;
+        lifeElems[lives].classList.add("hidden");
+        if (lives > 0) {
+            carPlayer.blink(1500);
+        } else {
+            handleLose();
+            return;
+        }
     }
     updateSpeedScale(deltaTime);  // TODO fix bug fast road
     updateScore(deltaTime);
@@ -45,12 +55,23 @@ function update(time: number): void {
 
 function handleStart(): void {
     lastTime = null;
-    speedScale = 1;
+    speedScale = 0;
     score = 0;
+    lives = MAX_LIVES;
+    for (const life of lifeElems) {
+        life.classList.remove("hidden");
+    }
     carPlayer.reset();
     resetCarObstacles();
     startGameElem.classList.add("hidden");
     window.requestAnimationFrame(update);
+}
+
+function handleLose(): void {
+    startGameElem.classList.remove("hidden");
+    setTimeout(() => {
+        document.addEventListener("keydown", handleStart, { once: true });
+    }, 100);
 }
 
 function updateSpeedScale(deltaTime: number): void {
@@ -75,18 +96,5 @@ function checkCollision(playerRect: DOMRect, obstaclesRects: DOMRect[]): boolean
     });
 }
 
-function setPixelToGameScale(): void {
-    let gameToPixelScale;
-    if (window.innerWidth / window.innerHeight < GAME_WIDTH / GAME_HEIGHT) {
-        gameToPixelScale = window.innerWidth / GAME_WIDTH;
-    } else {
-        gameToPixelScale = window.innerHeight / GAME_HEIGHT;
-    }
-    gameWrapperElem.style.width = `${GAME_WIDTH * gameToPixelScale}px`;
-    gameWrapperElem.style.height = `${GAME_HEIGHT * gameToPixelScale}px`;
-}
-
-setPixelToGameScale();
-window.addEventListener("resize", setPixelToGameScale);
 document.addEventListener("keydown", handleStart, { once: true });
 document.addEventListener("contextmenu", (e: Event): void => e.preventDefault());

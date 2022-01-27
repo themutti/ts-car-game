@@ -3,6 +3,7 @@ import GameObject, { px2vw } from "./gameObject.js";
 const SPEED = 0.04;
 
 export default class CarPlayer extends GameObject {
+    private _isBlinking: boolean;
     private readonly pressedKeys = {
         up: false,
         down: false,
@@ -17,9 +18,22 @@ export default class CarPlayer extends GameObject {
         this.reset();
     }
 
+    get isBlinking(): boolean {
+        return this._isBlinking;
+    }
+
     reset(): void {
         this.x = 5;
-        this.y = 19;
+        this.y = 11;
+    }
+
+    blink(duration: number): void {
+        this.element.classList.add("blink");
+        this._isBlinking = true;
+        setTimeout((): void => {
+            this.element.classList.remove("blink");
+            this._isBlinking = false;
+        }, duration);
     }
 
     update(deltaTime: number, speedScale: number): void {

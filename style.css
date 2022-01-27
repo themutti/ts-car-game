@@ -10,12 +10,15 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow: hidden;
 }
 
 #game-wrapper {
     position: relative;
     overflow: hidden;
     background-color: #404040;
+    width: 100vw;
+    height: 35vw;
 }
 
 #score {
@@ -23,7 +26,7 @@ body {
     right: 1vmin;
     top: 1vmin;
     font-size: 3vmin;
-    z-index: 1;
+    z-index: 2;
 }
 
 #start-game {
@@ -32,7 +35,20 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 5vmin;
-    z-index: 1;
+    z-index: 5;
+}
+
+#lives {
+    position: absolute;
+    top: 0.8vw;
+    left: 0.5vw;
+    z-index: 2;
+}
+
+.life {
+    width: 3vw;
+    height: 3vw;
+    margin-left: 0.1vw;
 }
 
 .hidden {
@@ -64,4 +80,17 @@ body {
     --x: 0;
     --y: 0;
     z-index: 1;
+}
+
+.blink {
+    animation: blink 0.3s linear 0s infinite alternate;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
 }
