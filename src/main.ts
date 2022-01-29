@@ -46,9 +46,9 @@ function update(time: number): void {
             return;
         }
     }
+
     updateSpeedScale(deltaTime);  // TODO fix bug fast road
     updateScore(deltaTime);
-
     lastTime = time;
     window.requestAnimationFrame(update);
 }
@@ -71,7 +71,7 @@ function handleLose(): void {
     startGameElem.classList.remove("hidden");
     setTimeout(() => {
         document.addEventListener("keydown", handleStart, { once: true });
-    }, 100);
+    }, 500);
 }
 
 function updateSpeedScale(deltaTime: number): void {

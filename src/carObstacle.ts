@@ -86,8 +86,7 @@ export function updateCarObstacles(deltaTime: number, speedScale: number): void 
     if (cars.length <= MAX_CARS) {
         if (nextCarTime <= 0) {
             cars.push(new CarObstacle(gameWrapperElem, speedScale));
-            // subtract speedScale*50 from MAX_CAR_TIME to make the game harder the faster it goes
-            nextCarTime = randint(MIN_CAR_TIME, MAX_CAR_TIME + speedScale*50);
+            nextCarTime = randint(MIN_CAR_TIME, MAX_CAR_TIME * (cars.length + 1) / (speedScale + 1));
         }
         nextCarTime -= deltaTime;
     }

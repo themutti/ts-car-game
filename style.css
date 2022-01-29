@@ -11,6 +11,7 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow: hidden;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 #game-wrapper {
@@ -23,19 +24,23 @@ body {
 
 #score {
     position: absolute;
-    right: 1vmin;
-    top: 1vmin;
-    font-size: 3vmin;
+    right: 1vw;
+    top: 1vw;
+    font-size: 2.5vw;
     z-index: 2;
+    color: white;
 }
 
 #start-game {
     position: absolute;
     top: 38%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 5vmin;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    font-size: 4vw;
     z-index: 5;
+    color: black;
 }
 
 #lives {
